@@ -1,6 +1,6 @@
 class Archive:
-    def __init__(self):
-        pass
+    def __init__(self, size):
+        size = size
 
     def push(self):
         pass
