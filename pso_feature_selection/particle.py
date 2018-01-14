@@ -61,6 +61,6 @@ class Particle:
     def add_neighbour(self, neighbour):
         self.neighbours += [neighbour]
 
-    def adaptive_uniform_mutation(self, iteration):
-        pm = 0.5 * math.pow(math.e, -10*iteration/self.num_dimensions) + 0.01
+    def adaptive_uniform_mutation(self, iteration, iterations):
+        pm = 0.5 * math.pow(math.e, -10*iteration/iterations) + 0.01
 
