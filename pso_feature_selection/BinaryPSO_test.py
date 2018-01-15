@@ -13,19 +13,19 @@ from pso_feature_selection.BinaryPSO import BinaryPSO as BPSO
 from pso_feature_selection.BinaryMutatedPSO import BinaryMutatedPSO as BMPSO
 
 
-# n_features = 50
-# n_informative = 15
-# n_redundant = 0
-# n_classes = 3
-# X_train, y_train = make_classification(n_samples=200, n_features=n_features, n_classes=n_classes,
-#                            n_informative=n_informative, n_redundant=n_redundant, n_repeated=0,
-#                            random_state=1)
-# X_test = X_train
-# y_test = y_train
+n_features = 50
+n_informative = 15
+n_redundant = 0
+n_classes = 3
+X_train, y_train = make_classification(n_samples=200, n_features=n_features, n_classes=n_classes,
+                           n_informative=n_informative, n_redundant=n_redundant, n_repeated=0,
+                           random_state=1)
+X_test = X_train
+y_test = y_train
 
-X_train, y_train = read_spect_dataset(train=True)
-X_test, y_test = read_spect_dataset(train=False)
-n_features = len(X_train[0])
+# X_train, y_train = read_spect_dataset(train=True)
+# X_test, y_test = read_spect_dataset(train=False)
+# n_features = len(X_train[0])
 
 # Create an instance of the classifier
 classifier = linear_model.LogisticRegression()
@@ -88,7 +88,7 @@ def f(x, alpha=0.88):
     return np.array(j)
 
 
-def f_entropy(x, alpha=0.66):
+def f_entropy(x, alpha=0.8):
     n_particles = x.shape[0]
     f_entropy_value = np.ndarray(n_particles)
 
@@ -122,6 +122,11 @@ def f_entropy(x, alpha=0.66):
     return np.array(f_entropy_value)
 
 
+def f_entropy_combined(x, alpha1=0.80, alpha2=0.88, beta=0.8):
+    f_entropy_combined_value = beta * f(x, alpha1) + (1-beta) * f_entropy(x, alpha2)
+    return np.array(f_entropy_combined_value)
+
+
 # Initialize swarm, arbitrary
 options = {'c1': 0.5, 'c2': 0.5, 'w':0.9, 'k': 15, 'p':2}
 
@@ -135,7 +140,7 @@ optimizer_BMPSO = BMPSO(n_particles=30, dimensions=dimensions, options=options)
 
 def perform_optimization(optimizer, f):
     # Perform optimization
-    cost, pos = optimizer.optimize(f, print_step=1, iters=100, verbose=2)
+    cost, pos = optimizer.optimize(f, print_step=1, iters=10, verbose=2)
 
     # Create two instances of LogisticRegression
     cl1 = linear_model.LogisticRegression()
@@ -154,9 +159,11 @@ def perform_optimization(optimizer, f):
 # perform_optimization(optimizer_BPSO, f)
 # perform_optimization(optimizer_BMPSO, f)
 
-perform_optimization(optimizer_BPSO, f_entropy)
+# perform_optimization(optimizer_BPSO, f_entropy)
 # perform_optimization(optimizer_BMPSO, f_entropy)
 
+perform_optimization(optimizer_BPSO, f_entropy_combined)
+# perform_optimization(optimizer_BMPSO, f_entropy_combined)
 
 # Tree-based feature selection
 clf = ExtraTreesClassifier()
