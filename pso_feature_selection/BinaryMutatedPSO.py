@@ -36,7 +36,7 @@ def end_report(cost, pos, verbosity, logger):
     template = ('================================\n'
                 'Optimization finished!\n'
                 'Final cost: {:06.4f}\n'
-                'Best value: {}\n').format(cost, pos)
+                'Best value: {}\n').format(cost, sum(pos))
     if verbosity >= 1:
         logger.info(template)
 
@@ -221,14 +221,14 @@ class BinaryMutatedPSO(DiscreteSwarmBase):
     def _update_position(self):
         self.pos = (np.random.random_sample(size=self.swarm_size) < self._sigmoid(self.velocity)) * 1
 
-    def _adaptive_uniform_mutation(self, crtiter, alliters):
-        pm = 0.5 * math.pow(math.e, -10 * crtiter / alliters) + 0.01
+    def _adaptive_uniform_mutation(self, current_iter, max_iter):
+
+        pm = 0.5 * math.pow(math.e, -10 * current_iter / max_iter) + 0.01
+
         for i in range(self.n_particles):
             if pm > np.random.uniform(0,1):
-                K = int(max(1, math.ceil(self.dimensions * pm)))
-                # print ("K {0}".format(K))
+                K = max(1, int(math.ceil(self.dimensions * pm)))
                 S = np.random.choice(range(self.dimensions), K)
-                # print("S {0}".format(S))
 
                 for k in range(K):
                     self.pos[i, S[k]] = np.random.randint(2, size=1)

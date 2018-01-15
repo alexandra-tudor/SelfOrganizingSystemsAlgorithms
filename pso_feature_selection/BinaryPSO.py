@@ -35,7 +35,7 @@ def end_report(cost, pos, verbosity, logger):
     template = ('================================\n'
                 'Optimization finished!\n'
                 'Final cost: {:06.4f}\n'
-                'Best value: {}\n').format(cost, pos)
+                'Best value: {}\n').format(cost, sum(pos))
     if verbosity >= 1:
         logger.info(template)
 
